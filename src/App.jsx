@@ -60,11 +60,22 @@ function App() {
 
   // 카테고리 실시간 구독
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'categories'), (snapshot) => {
+    const unsubscribe = onSnapshot(collection(db, 'categories'), async (snapshot) => {
       if (snapshot.empty) {
         // 카테고리가 없으면 기본 카테고리 추가
-        initializeCategories()
+        await initializeCategories()
       } else {
+        // Firestore에 없는 새 기본 카테고리만 추가 (코드 업데이트 반영)
+        const existingIds = new Set(snapshot.docs.map(d => d.id))
+        const missingDefaults = DEFAULT_CATEGORIES.filter(c => !existingIds.has(c.id))
+        if (missingDefaults.length > 0) {
+          const batch = writeBatch(db)
+          missingDefaults.forEach(category => {
+            batch.set(doc(db, 'categories', category.id), category)
+          })
+          await batch.commit()
+          return // onSnapshot이 다시 불리므로 여기서 state만 갱신
+        }
         const categoriesData = snapshot.docs.map(docSnap => ({
           ...docSnap.data(),
           id: docSnap.id  // 삭제 시 Firestore 문서 ID 사용
@@ -75,7 +86,7 @@ function App() {
     return () => unsubscribe()
   }, [])
 
-  // 기본 카테고리 초기화
+  // 기본 카테고리 초기화 (컬렉션이 비어 있을 때만 전체 설정)
   const initializeCategories = async () => {
     const batch = writeBatch(db)
     DEFAULT_CATEGORIES.forEach(category => {
