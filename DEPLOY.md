@@ -19,14 +19,32 @@ Git과 Node.js가 설치되어 있으면 아래 명령으로 배포할 수 있�
 
 ### GitHub Pages 설정 (최초 1회)
 
+**방법 A – GitHub Actions 사용 (gh-pages 브랜치가 안 보일 때)**
+
 1. https://github.com/keyhoney/refrigerator → **Settings** → **Pages**
-2. **Source**: Deploy from a branch
-3. **Branch**: `gh-pages` / **/(root)** 선택 후 **Save**
+2. **Build and deployment**에서 **Source**를 **GitHub Actions**로 선택
+3. 저장 후, main 브랜치에 푸시하면 자동으로 빌드·배포됨
+
+**방법 B – gh-pages 브랜치 사용**
+
+1. **Source**를 **Deploy from a branch**로 선택
+2. **Branch**: `gh-pages` / **/(root)** 선택 후 **Save**
 
 ### 코드 수정 후 재배포
 
+**GitHub Actions 사용 시** (Source를 GitHub Actions로 설정한 경우):
+
 ```powershell
 cd C:\dev\refrigerator
+git add .
+git commit -m "변경 내용 설명"
+git push
+```
+푸시만 하면 자동으로 빌드·배포됩니다.
+
+**gh-pages 브랜치 사용 시**:
+
+```powershell
 git add .
 git commit -m "변경 내용 설명"
 git push
