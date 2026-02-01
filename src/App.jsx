@@ -24,9 +24,16 @@ const DEFAULT_CATEGORIES = [
   { id: 'meat', name: '육류', isDefault: true },
   { id: 'seafood', name: '해산물', isDefault: true },
   { id: 'dairy', name: '유제품', isDefault: true },
-  { id: 'beverages', name: '음료', isDefault: true },
-  { id: 'seasonings', name: '조미료', isDefault: true },
-  { id: 'others', name: '기타', isDefault: true }
+  { id: 'sauces', name: '소스/양념', isDefault: true },
+  { id: 'beverages', name: '음료/주류', isDefault: true },
+  { id: 'processed', name: '가공식품', isDefault: true },
+  { id: 'fresh', name: '신선식품', isDefault: true },
+  { id: 'frozen', name: '냉동식품', isDefault: true },
+  { id: 'grains', name: '곡류/견과류', isDefault: true },
+  { id: 'dried', name: '건어물', isDefault: true },
+  { id: 'instant', name: '즉석/조리식품', isDefault: true },
+  { id: 'mealkit', name: '밀키트', isDefault: true },
+  { id: 'snacks', name: '간식/디저트', isDefault: true },
 ]
 
 function App() {
@@ -58,9 +65,9 @@ function App() {
         // 카테고리가 없으면 기본 카테고리 추가
         initializeCategories()
       } else {
-        const categoriesData = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
+        const categoriesData = snapshot.docs.map(docSnap => ({
+          ...docSnap.data(),
+          id: docSnap.id  // 삭제 시 Firestore 문서 ID 사용
         }))
         setCategories(categoriesData)
       }
